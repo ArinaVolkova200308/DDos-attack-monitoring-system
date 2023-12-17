@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: arina_volkova_03@mail.ru
+      PGADMIN_DEFAULT_PASSWORD: pass
+    volumes:
+      - pgadmin:/root/.pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+      
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: arina_volkova
+      POSTGRES_PASSWORD: pass
+      PGDATA: /data/arina_volkova
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: always
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest  
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - 'grafana_storage:/var/lib/grafana'
+    networks:
+      - postgres
+    restart: unless-stopped
+ 
+  microservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    pgadmin:
+    postgres:
+    grafana_storage: {}

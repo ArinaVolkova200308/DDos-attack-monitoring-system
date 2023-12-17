@@ -1,0 +1,5 @@
+com\example\repository\IPRecordRepository.class
+com\example\controller\IPLoggerController.class
+com\example\MicroserviceApplication.class
+com\example\service\IPLoggerService.class
+com\example\model\IPRecord.class
